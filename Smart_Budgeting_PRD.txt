@@ -1,0 +1,264 @@
+# Product Requirements Document (PRD)
+
+## Product Name
+Smart Budgeting for Google Pay
+
+---
+
+# Objective
+
+Build a mobile app prototype feature integrated into a Google Pay-like interface that allows users to:
+
+- Create monthly category-wise budgets
+- Tag transactions to a category during payment
+- Track category spending in real time
+- Receive budget threshold alerts
+- Reallocate budgets between categories
+
+The prototype should focus on realistic user flow and clean mobile UI.
+
+---
+
+# Platform
+
+- Mobile-first prototype
+- Android-style UI
+- Google Pay-inspired design language
+- Responsive mobile screens
+
+---
+
+# Core User Flow
+
+## Flow 1 — Budget Setup
+
+### Screen: “Set Monthly Budget”
+
+User can:
+- Enter total monthly budget
+- Allocate budget across categories
+- Edit category amounts
+- Save budget
+
+### Default Categories
+- Groceries
+- Dining Out
+- Transport
+- Shopping
+- Bills & Utilities
+- Others
+
+### Functional Requirements
+- Total category allocation must equal total monthly budget
+- Show category percentage allocation
+- Save button at bottom
+
+### Example Data
+Total Budget: ₹50,000
+
+| Category | Amount |
+|---|---|
+| Groceries | ₹10,000 |
+| Dining Out | ₹5,000 |
+| Transport | ₹4,000 |
+| Shopping | ₹8,000 |
+| Bills & Utilities | ₹12,000 |
+| Others | ₹11,000 |
+
+---
+
+# Flow 2 — Payment Category Selection
+
+## Screen: “Choose Category During Payment”
+
+### User Scenario
+User is paying ₹725 to “FreshMart Grocery Store”.
+
+### Functional Requirements
+- Show merchant name
+- Show payment amount
+- Show category list
+- Display remaining balance per category
+- Allow single category selection
+- Highlight selected category
+- “Pay ₹725” CTA button
+
+### Example Remaining Budgets
+| Category | Remaining |
+|---|---|
+| Groceries | ₹10,000 left |
+| Dining Out | ₹2,350 left |
+| Transport | ₹1,200 left |
+| Shopping | ₹5,500 left |
+| Others | ₹4,300 left |
+
+### Auto-Suggestion Logic
+If merchant contains:
+- Grocery → suggest Groceries
+- Uber/Ola → suggest Transport
+- Restaurant/Swiggy/Zomato → suggest Dining Out
+
+---
+
+# Flow 3 — Real-Time Budget Dashboard
+
+## Screen: “Budget Dashboard”
+
+### Functional Requirements
+Display:
+- Total spent
+- Remaining total budget
+- Overall progress percentage
+- Category-wise spending progress
+- Remaining amount per category
+
+### UI Components
+- Circular progress indicator
+- Progress bars
+- Category cards/list
+
+### Example Dashboard Data
+Overall:
+- ₹28,450 spent out of ₹50,000
+- 57% utilized
+
+Category Example:
+Groceries:
+- ₹7,850 left
+- ₹2,150 spent
+
+Dining:
+- ₹2,350 left
+- ₹2,650 spent
+
+Transport:
+- ₹1,200 left
+- ₹2,800 spent
+
+---
+
+# Flow 4 — Budget Reallocation
+
+## Screen: “Move Budget”
+
+### Functional Requirements
+User can:
+- Select source category
+- Select destination category
+- Enter transfer amount
+- Confirm transfer
+
+### Example
+Move:
+- ₹2,000
+From:
+- Shopping
+To:
+- Groceries
+
+### Validation
+- Cannot move more than available remaining amount
+
+---
+
+# Flow 5 — Budget Alerts
+
+## Alert Types
+
+### 75% Usage Alert
+Example:
+“You’ve used 75% of your Dining Out budget.”
+
+### 90% Usage Alert
+Example:
+“Only ₹500 left in Shopping.”
+
+### Budget Exceeded Alert
+Example:
+“You exceeded your Transport budget by ₹300.”
+
+---
+
+# Required Screens
+
+Create these prototype screens:
+
+1. Onboarding / Intro screen
+2. Monthly Budget Setup screen
+3. Payment Category Selection screen
+4. Budget Dashboard screen
+5. Budget Reallocation modal/screen
+6. Alert/Notification examples
+
+---
+
+# Design Requirements
+
+## Visual Style
+- Clean fintech UI
+- White background
+- Google Pay-inspired colors
+- Rounded cards
+- Minimal clutter
+
+## UX Principles
+- Maximum 2–3 taps per action
+- Simple typography
+- Fast interaction flow
+- Clear spending visualization
+
+---
+
+# Prototype Requirements
+
+## The prototype should support:
+- Clickable navigation between screens
+- Interactive category selection
+- Dynamic progress visualization
+- Editable budgets
+- Simulated payment flow
+
+---
+
+# Data Model
+
+Use this sample structure:
+
+```json
+{
+  "monthlyBudget": 50000,
+  "spent": 28450,
+  "categories": [
+    {
+      "name": "Groceries",
+      "allocated": 10000,
+      "spent": 2150
+    },
+    {
+      "name": "Dining Out",
+      "allocated": 5000,
+      "spent": 2650
+    },
+    {
+      "name": "Transport",
+      "allocated": 4000,
+      "spent": 2800
+    }
+  ]
+}
+```
+
+# Constraints
+
+- Do not build backend/authentication
+- Use mock/static data only
+- Focus on UX realism
+- Prioritize payment-time budgeting experience
+
+# Final Deliverable
+
+Build:
+- High-fidelity clickable mobile prototype
+- Smooth navigation between flows
+- Functional UI interactions
+- Fintech-grade visual polish
