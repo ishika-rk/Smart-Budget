@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Budget Management App Prototype</title>
+
+  <!-- =========================================================
+       STYLESHEET
+       ========================================================= -->
+  <style>
+
+    /* =========================================================
+       GLOBAL RESET
+       ========================================================= */
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+    }
+
+    /* =========================================================
+       PHONE CONTAINER
+       ========================================================= */
+    .ph{
+      width:360px;
+      background:#fff;
+      border-radius:32px;
+      border:2px solid #e0e0e0;
+      overflow:hidden;
+      margin:0 auto;
+      font-family:'Google Sans',Roboto,sans-serif;
+      position:relative;
+    }
+
+    /* =========================================================
+       STATUS BAR
+       ========================================================= */
+    .sb{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:10px 20px 6px;
+      font-size:12px;
+      font-weight:500;
+      color:#202124;
+    }
+
+    /* =========================================================
+       SCREEN SYSTEM
+       ========================================================= */
+    .scr{
+      display:none;
+      flex-direction:column;
+    }
+
+    .scr.active{
+      display:flex;
+    }
+
+    /* =========================================================
+       NAVIGATION BAR
+       ========================================================= */
+    .nb{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:8px 16px 10px;
+      border-bottom:0.5px solid #f1f3f4;
+    }
+
+    .nb-title{
+      font-size:17px;
+      font-weight:500;
+      color:#202124;
+      flex:1;
+    }
+
+    /* =========================================================
+       CONTENT AREA
+       ========================================================= */
+    .sc{
+      flex:1;
+      overflow-y:auto;
+      padding:12px 16px 20px;
+    }
+
+    /* =========================================================
+       PRIMARY BUTTON
+       ========================================================= */
+    .btn-p{
+      background:#1a73e8;
+      color:#fff;
+      border:none;
+      border-radius:24px;
+      padding:14px;
+      font-size:15px;
+      font-weight:500;
+      cursor:pointer;
+      width:100%;
+    }
+
+    .btn-p:hover{
+      background:#1557b0;
+    }
+
+    /* =========================================================
+       CARD COMPONENT
+       ========================================================= */
+    .card{
+      background:#fff;
+      border-radius:16px;
+      border:0.5px solid #e8eaed;
+      padding:13px 15px;
+      margin-bottom:9px;
+    }
+
+    /* =========================================================
+       CATEGORY ICON
+       ========================================================= */
+    .ci{
+      width:36px;
+      height:36px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:16px;
+      flex-shrink:0;
+    }
+
+    /* =========================================================
+       INPUT FIELD
+       ========================================================= */
+    .inp-amt{
+      border:none;
+      background:transparent;
+      font-size:15px;
+      font-weight:500;
+      color:#202124;
+      text-align:right;
+      width:100px;
+      outline:none;
+    }
+
+  </style>
+</head>
+
+<body style="padding:20px;background:#f5f5f5;">
+
+  <!-- =========================================================
+       APP CONTAINER
+       ========================================================= -->
+  <div class="ph">
+
+    <!-- STATUS BAR -->
+    <div class="sb">
+      <span>9:30</span>
+      <span>WiFi | Battery</span>
+    </div>
+
+    <!-- =========================================================
+         SCREEN: BUDGET SETUP
+         ========================================================= -->
+    <div class="scr active" id="s-budget">
+
+      <!-- NAVBAR -->
+      <div class="nb">
+        <span class="nb-title">Set Monthly Budget</span>
+      </div>
+
+      <!-- CONTENT -->
+      <div class="sc">
+
+        <!-- Monthly Budget -->
+        <div style="margin-bottom:20px;">
+          <div style="font-size:12px;color:#5f6368;margin-bottom:4px;">
+            Monthly Budget · May 2025
+          </div>
+
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="font-size:26px;font-weight:700;">₹</span>
+
+            <input
+              id="total-inp"
+              type="number"
+              value="50000"
+              class="inp-amt"
+              style="font-size:26px;width:160px;"
+            />
+          </div>
+        </div>
+
+        <!-- Category Card -->
+        <div class="card">
+
+          <div style="display:flex;align-items:center;gap:12px;">
+
+            <!-- Category Icon -->
+            <div class="ci" style="background:#e6f4ea;">
+              🛒
+            </div>
+
+            <!-- Category Details -->
+            <div style="flex:1;">
+              <div style="font-size:14px;font-weight:600;">
+                Groceries
+              </div>
+
+              <div style="font-size:12px;color:#5f6368;">
+                Allocated Budget
+              </div>
+            </div>
+
+            <!-- Amount -->
+            <input
+              type="number"
+              value="10000"
+              class="inp-amt"
+            />
+
+          </div>
+
+        </div>
+
+        <!-- Save Button -->
+        <button class="btn-p">
+          Save Budget
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       JAVASCRIPT
+       ========================================================= -->
+  <script>
+
+    /* =========================================================
+       CATEGORY MASTER DATA
+       ========================================================= */
+    const CATS = [
+      {
+        id:'groceries',
+        name:'Groceries',
+        icon:'🛒'
+      },
+
+      {
+        id:'dining',
+        name:'Dining Out',
+        icon:'🍽'
+      }
+    ];
+
+    /* =========================================================
+       APP STATE
+       ========================================================= */
+    const S = {
+      totalBudget:50000,
+
+      cats:[
+        {
+          id:'groceries',
+          allocated:10000,
+          spent:2150
+        }
+      ]
+    };
+
+    /* =========================================================
+       FORMAT CURRENCY
+       ========================================================= */
+    const fmt = n =>
+      '₹' + Math.round(n).toLocaleString('en-IN');
+
+    /* =========================================================
+       SAVE BUDGET FUNCTION
+       ========================================================= */
+    function saveBudget(){
+
+      alert(
+        `Budget Saved: ${fmt(S.totalBudget)}`
+      );
+    }
+
+  </script>
+
+</body>
+</html>
