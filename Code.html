@@ -1,0 +1,572 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.ph{width:360px;background:#fff;border-radius:32px;border:2px solid #e0e0e0;overflow:hidden;margin:0 auto;font-family:'Google Sans',Roboto,sans-serif;position:relative}
+.sb{display:flex;justify-content:space-between;align-items:center;padding:10px 20px 6px;font-size:12px;font-weight:500;color:#202124}
+.scr{display:none;flex-direction:column}
+.scr.active{display:flex}
+.nb{display:flex;align-items:center;gap:10px;padding:8px 16px 10px;border-bottom:0.5px solid #f1f3f4}
+.nb-back{width:32px;height:32px;border-radius:50%;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#5f6368;font-size:18px}
+.nb-title{font-size:17px;font-weight:500;color:#202124;flex:1}
+.av{width:30px;height:30px;border-radius:50%;background:#4285f4;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#fff}
+.sc{flex:1;overflow-y:auto;padding:12px 16px 20px}
+.btn-p{background:#1a73e8;color:#fff;border:none;border-radius:24px;padding:14px;font-size:15px;font-weight:500;cursor:pointer;width:100%;transition:background .2s;font-family:inherit}
+.btn-p:hover{background:#1557b0}
+.btn-p:disabled{background:#b0bec5;cursor:default}
+.btn-o{background:#fff;color:#1a73e8;border:1.5px solid #1a73e8;border-radius:24px;padding:12px;font-size:14px;font-weight:500;cursor:pointer;width:100%;font-family:inherit;transition:background .2s}
+.btn-o:hover{background:#e8f0fe}
+.card{background:#fff;border-radius:16px;border:0.5px solid #e8eaed;padding:13px 15px;margin-bottom:9px}
+.prog-t{height:5px;background:#f1f3f4;border-radius:3px;overflow:hidden;margin-top:6px}
+.prog-f{height:100%;border-radius:3px;transition:width .5s ease}
+.ci{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.csr{display:flex;align-items:center;gap:10px;padding:11px 13px;border-radius:12px;border:1.5px solid transparent;margin-bottom:7px;cursor:pointer;transition:all .15s}
+.csr.sel{border-color:#1a73e8;background:#e8f0fe}
+.csr:hover:not(.sel){background:#f8f9fa}
+.chk{width:22px;height:22px;border-radius:50%;border:2px solid #dadce0;margin-left:auto;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff}
+.csr.sel .chk{background:#1a73e8;border-color:#1a73e8}
+.toast{position:absolute;top:58px;left:12px;right:12px;background:#202124;color:#fff;border-radius:12px;padding:11px 15px;font-size:13px;display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(-6px);transition:all .3s;pointer-events:none;z-index:99}
+.toast.show{opacity:1;transform:translateY(0)}
+.sov{position:absolute;inset:0;background:rgba(255,255,255,0.97);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:90;border-radius:30px;padding:32px}
+.sov.show{display:flex}
+.sov-ring{width:80px;height:80px;border-radius:50%;background:#e6f4ea;display:flex;align-items:center;justify-content:center;margin-bottom:18px;animation:pop .4s ease forwards}
+@keyframes pop{0%{transform:scale(0.4);opacity:0}70%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+.msel{width:100%;padding:10px 12px;border:0.5px solid #e8eaed;border-radius:10px;background:#f8f9fa;font-size:14px;color:#202124;font-family:inherit;appearance:none;outline:none;cursor:pointer}
+.minp{width:100%;padding:10px 12px;border:0.5px solid #e8eaed;border-radius:10px;background:#f8f9fa;font-size:14px;color:#202124;font-family:inherit;outline:none}
+.minp:focus,.minp:focus-within{border-color:#1a73e8;background:#fff}
+.err{font-size:12px;color:#c5221f;margin-top:5px;min-height:17px}
+.bot{display:flex;border-top:0.5px solid #e8eaed;padding:8px 0 4px;background:#fff}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:#5f6368;cursor:pointer;padding:4px 0}
+.tab.act{color:#1a73e8}
+.inp-amt{border:none;background:transparent;font-size:15px;font-weight:500;color:#202124;text-align:right;width:100px;outline:none;font-family:inherit}
+.total-bar{background:#f8f9fa;border-radius:10px;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;margin-top:6px;border:0.5px solid #e8eaed}
+.pill{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500}
+.navpills{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:14px;max-width:360px;margin-left:auto;margin-right:auto}
+.navpill{font-size:11px;padding:6px 11px;border-radius:20px;border:1px solid #e8eaed;background:#fff;cursor:pointer;color:#5f6368;font-family:inherit;transition:all .15s}
+.navpill:hover{background:#e8f0fe;color:#1a73e8;border-color:#1a73e8}
+.navpill.act{background:#1a73e8;color:#fff;border-color:#1a73e8}
+.pay-amt-wrap{display:flex;align-items:center;gap:6px;margin-bottom:18px;border-bottom:2px solid #e8eaed;padding-bottom:4px}
+.pay-amt-inp{font-size:34px;font-weight:700;color:#202124;border:none;outline:none;width:180px;background:transparent;font-family:inherit}
+</style>
+
+<div style="padding:14px 0">
+<div class="ph" id="ph">
+  <div class="sb"><span>9:30</span><span style="display:flex;gap:4px"><i class="ti ti-wifi" style="font-size:13px" aria-hidden="true"></i><i class="ti ti-battery" style="font-size:13px" aria-hidden="true"></i></span></div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- Success overlay -->
+  <div class="sov" id="sov">
+    <div class="sov-ring"><i class="ti ti-check" style="font-size:36px;color:#34a853" aria-hidden="true"></i></div>
+    <div id="sov-title" style="font-size:21px;font-weight:700;color:#202124;margin-bottom:8px;text-align:center"></div>
+    <div id="sov-line1" style="font-size:14px;color:#5f6368;text-align:center;margin-bottom:4px"></div>
+    <div id="sov-line2" style="font-size:13px;color:#9aa0a6;text-align:center;margin-bottom:4px"></div>
+    <div id="sov-line3" style="font-size:13px;font-weight:500;color:#1a73e8;text-align:center;margin-bottom:24px"></div>
+    <button class="btn-p" style="width:180px" onclick="closeSov()">Done</button>
+  </div>
+
+  <!-- ── SCREEN: Budget Setup ── -->
+  <div class="scr active" id="s-budget">
+    <div class="nb">
+      <button class="nb-back" onclick="go('s-dash')" aria-label="back"><i class="ti ti-arrow-left" aria-hidden="true"></i></button>
+      <span class="nb-title">Set Monthly Budget</span>
+      <div class="av">A</div>
+    </div>
+    <div class="sc">
+      <div style="margin-bottom:14px">
+        <div style="font-size:12px;color:#5f6368;margin-bottom:4px">Monthly budget · May 2025</div>
+        <div style="display:flex;align-items:center;gap:6px;border-bottom:2px solid #e8eaed;padding-bottom:4px;width:fit-content">
+          <span style="font-size:26px;font-weight:700;color:#202124">₹</span>
+          <input id="total-inp" type="number" value="50000" min="1000" max="999999"
+            style="font-size:26px;font-weight:700;color:#202124;border:none;outline:none;width:150px;background:transparent;font-family:inherit"
+            oninput="onTotalChange()"/>
+          <i class="ti ti-pencil" style="color:#1a73e8;font-size:16px" aria-hidden="true"></i>
+        </div>
+        <div class="err" id="total-err"></div>
+      </div>
+      <div style="font-size:13px;font-weight:500;color:#5f6368;margin-bottom:10px">Allocate across categories</div>
+      <div id="budget-rows"></div>
+      <div class="total-bar">
+        <div><div style="font-size:12px;color:#5f6368">Allocated</div><div style="font-size:15px;font-weight:600;color:#202124" id="alloc-sum">₹50,000</div></div>
+        <div style="text-align:right"><div style="font-size:12px;color:#5f6368">Unallocated</div><div style="font-size:15px;font-weight:600" id="alloc-rem">₹0</div></div>
+      </div>
+    </div>
+    <div style="padding:10px 16px 18px"><button class="btn-p" id="save-btn" onclick="saveBudget()">Save Budget</button></div>
+  </div>
+
+  <!-- ── SCREEN: Payment ── -->
+  <div class="scr" id="s-payment">
+    <div class="nb">
+      <button class="nb-back" onclick="go('s-dash')" aria-label="close"><i class="ti ti-x" aria-hidden="true"></i></button>
+      <span class="nb-title">Pay</span>
+      <div class="av">A</div>
+    </div>
+    <div class="sc">
+      <div style="font-size:12px;color:#5f6368;margin-bottom:1px">Paying</div>
+      <div style="font-size:15px;font-weight:500;color:#202124">FreshMart (Grocery Store)</div>
+      <div style="font-size:12px;color:#9aa0a6;margin-bottom:14px">+91 98765 43210</div>
+
+      <div class="pay-amt-wrap">
+        <span style="font-size:20px;font-weight:600;color:#5f6368">₹</span>
+        <input class="pay-amt-inp" id="pay-inp" type="number" value="725" min="1" oninput="onPayAmtChange()"/>
+        <span style="font-size:12px;color:#9aa0a6;align-self:flex-end;padding-bottom:6px">tap to edit</span>
+      </div>
+
+      <div style="font-size:13px;font-weight:500;color:#202124;margin-bottom:2px">Choose category</div>
+      <div style="font-size:12px;color:#5f6368;margin-bottom:10px">Remaining balance shown per category</div>
+      <div id="pay-cats"></div>
+      <div class="err" id="pay-err"></div>
+    </div>
+    <div style="padding:10px 16px 18px">
+      <button class="btn-p" id="pay-btn" onclick="doPayment()">Pay ₹725</button>
+    </div>
+  </div>
+
+  <!-- ── SCREEN: Dashboard ── -->
+  <div class="scr" id="s-dash">
+    <div class="nb">
+      <span class="nb-title">Budget</span>
+      <div style="display:flex;gap:10px;align-items:center">
+        <i class="ti ti-bell" style="font-size:19px;color:#5f6368;cursor:pointer" onclick="go('s-alerts')" aria-hidden="true"></i>
+        <div class="av">A</div>
+      </div>
+    </div>
+    <div class="sc">
+      <div class="card" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div>
+          <div style="font-size:12px;color:#5f6368;margin-bottom:3px">Overall progress</div>
+          <div style="font-size:21px;font-weight:700;color:#202124"><span id="d-spent">₹28,450</span> <span style="font-size:13px;font-weight:400;color:#5f6368">spent</span></div>
+          <div style="font-size:13px;color:#5f6368">of <span id="d-total">₹50,000</span></div>
+        </div>
+        <svg width="76" height="76" viewBox="0 0 76 76">
+          <circle cx="38" cy="38" r="30" fill="none" stroke="#f1f3f4" stroke-width="8"/>
+          <circle id="d-arc" cx="38" cy="38" r="30" fill="none" stroke="#1a73e8" stroke-width="8"
+            stroke-dasharray="188.5" stroke-dashoffset="81" stroke-linecap="round" transform="rotate(-90 38 38)"/>
+          <text id="d-pct" x="38" y="43" text-anchor="middle" font-size="14" font-weight="700" fill="#202124">57%</text>
+        </svg>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span style="font-size:13px;font-weight:500;color:#202124">Categories</span>
+        <span style="font-size:12px;color:#1a73e8;cursor:pointer" onclick="go('s-budget')">Edit budgets</span>
+      </div>
+      <div id="dash-cats"></div>
+      <div style="display:flex;gap:8px;margin-top:4px">
+        <button class="btn-o" style="flex:1" onclick="go('s-realloc')"><i class="ti ti-arrows-exchange" aria-hidden="true"></i> Move</button>
+        <button class="btn-p" style="flex:1" onclick="go('s-payment')">Pay now</button>
+      </div>
+    </div>
+    <div class="bot">
+      <div class="tab" onclick="navgo('s-budget','np-budget')"><i class="ti ti-wallet" style="font-size:20px" aria-hidden="true"></i><span>Setup</span></div>
+      <div class="tab act"><i class="ti ti-chart-bar" style="font-size:20px" aria-hidden="true"></i><span>Dashboard</span></div>
+      <div class="tab" onclick="navgo('s-payment','np-payment')"><i class="ti ti-credit-card" style="font-size:20px" aria-hidden="true"></i><span>Pay</span></div>
+      <div class="tab" onclick="navgo('s-alerts','np-alerts')"><i class="ti ti-bell" style="font-size:20px" aria-hidden="true"></i><span>Alerts</span></div>
+    </div>
+  </div>
+
+  <!-- ── SCREEN: Realloc ── -->
+  <div class="scr" id="s-realloc">
+    <div class="nb">
+      <button class="nb-back" onclick="go('s-dash')" aria-label="back"><i class="ti ti-arrow-left" aria-hidden="true"></i></button>
+      <span class="nb-title">Move Budget</span>
+      <div class="av">A</div>
+    </div>
+    <div class="sc">
+      <div style="background:#e8f0fe;border-radius:12px;padding:12px 14px;margin-bottom:16px;display:flex;gap:10px">
+        <i class="ti ti-info-circle" style="color:#1a73e8;font-size:17px;flex-shrink:0;margin-top:1px" aria-hidden="true"></i>
+        <span style="font-size:13px;color:#1a73e8">Move unspent balance from one category to another. Only remaining balance can be transferred.</span>
+      </div>
+      <div style="margin-bottom:12px">
+        <div style="font-size:12px;color:#5f6368;margin-bottom:5px">From category</div>
+        <select class="msel" id="r-from" onchange="updateRealloc()"></select>
+        <div style="font-size:12px;color:#5f6368;margin-top:4px">Available: <strong id="r-avail" style="color:#202124"></strong></div>
+      </div>
+      <div style="display:flex;justify-content:center;margin:6px 0"><i class="ti ti-arrows-exchange" style="color:#1a73e8;font-size:22px" aria-hidden="true"></i></div>
+      <div style="margin-bottom:12px">
+        <div style="font-size:12px;color:#5f6368;margin-bottom:5px">To category</div>
+        <select class="msel" id="r-to" onchange="updateRealloc()"></select>
+      </div>
+      <div style="margin-bottom:4px">
+        <div style="font-size:12px;color:#5f6368;margin-bottom:5px">Amount (₹)</div>
+        <input class="minp" type="number" id="r-amt" value="2000" min="1" oninput="updateRealloc()"/>
+      </div>
+      <div class="err" id="r-err"></div>
+      <div class="total-bar" style="margin-top:10px;margin-bottom:16px">
+        <div style="font-size:13px;color:#5f6368"><span id="r-pfrom">Shopping</span> → <span id="r-pto">Groceries</span></div>
+        <div style="font-size:13px;font-weight:600;color:#1a73e8" id="r-pamt">₹2,000</div>
+      </div>
+    </div>
+    <div style="padding:10px 16px 18px"><button class="btn-p" id="r-btn" onclick="doRealloc()">Confirm Transfer</button></div>
+  </div>
+
+  <!-- ── SCREEN: Alerts ── -->
+  <div class="scr" id="s-alerts">
+    <div class="nb">
+      <button class="nb-back" onclick="go('s-dash')" aria-label="back"><i class="ti ti-arrow-left" aria-hidden="true"></i></button>
+      <span class="nb-title">Budget Alerts</span>
+      <div class="av">A</div>
+    </div>
+    <div class="sc">
+      <div style="font-size:12px;color:#5f6368;margin-bottom:12px">Recent notifications</div>
+      <div id="alerts-list"></div>
+      <div id="no-alerts" style="text-align:center;padding:40px 0;color:#9aa0a6;font-size:14px">No alerts yet — make some payments!</div>
+    </div>
+  </div>
+</div>
+
+<!-- nav pills -->
+<div class="navpills">
+  <button class="navpill act" id="np-budget" onclick="navgo('s-budget','np-budget')">① Budget Setup</button>
+  <button class="navpill" id="np-dash" onclick="navgo('s-dash','np-dash')">② Dashboard</button>
+  <button class="navpill" id="np-payment" onclick="navgo('s-payment','np-payment')">③ Pay</button>
+  <button class="navpill" id="np-realloc" onclick="navgo('s-realloc','np-realloc')">④ Move Budget</button>
+  <button class="navpill" id="np-alerts" onclick="navgo('s-alerts','np-alerts')">⑤ Alerts</button>
+</div>
+</div>
+
+<script>
+const CATS = [
+  {id:'groceries', name:'Groceries',    icon:'🛒', bg:'#e6f4ea', ic:'#137333', bar:'#34a853'},
+  {id:'dining',    name:'Dining Out',   icon:'🍽', bg:'#fce8e6', ic:'#c5221f', bar:'#ea4335'},
+  {id:'transport', name:'Transport',    icon:'🚌', bg:'#e8f0fe', ic:'#1a73e8', bar:'#4285f4'},
+  {id:'shopping',  name:'Shopping',     icon:'🛍', bg:'#f3e8fd', ic:'#7b1fa2', bar:'#9c27b0'},
+  {id:'bills',     name:'Bills & Utils',icon:'⚡', bg:'#fff8e1', ic:'#f57c00', bar:'#ff9800'},
+  {id:'others',    name:'Others',       icon:'··', bg:'#f1f3f4', ic:'#5f6368', bar:'#9aa0a6'},
+];
+
+const S = {
+  totalBudget: 50000,
+  cats: [
+    {id:'groceries', allocated:10000, spent:2150},
+    {id:'dining',    allocated:5000,  spent:2650},
+    {id:'transport', allocated:4000,  spent:2800},
+    {id:'shopping',  allocated:8000,  spent:2500},
+    {id:'bills',     allocated:12000, spent:8300},
+    {id:'others',    allocated:11000, spent:6700},
+  ],
+  selPayCat: 'groceries',
+  alerts: [],
+};
+
+const fmt = n => '₹' + Math.round(n).toLocaleString('en-IN');
+const meta = id => CATS.find(m => m.id === id);
+const cat  = id => S.cats.find(c => c.id === id);
+const rem  = id => { const c = cat(id); return c.allocated - c.spent; };
+const totalSpent = () => S.cats.reduce((a,c) => a + c.spent, 0);
+const totalAlloc = () => S.cats.reduce((a,c) => a + c.allocated, 0);
+
+function go(sid) {
+  document.querySelectorAll('.scr').forEach(s => s.classList.remove('active'));
+  document.getElementById(sid).classList.add('active');
+  if (sid === 's-budget')  renderBudget();
+  if (sid === 's-payment') renderPaymentScreen();
+  if (sid === 's-dash')    renderDash();
+  if (sid === 's-realloc') renderRealloc();
+  if (sid === 's-alerts')  renderAlerts();
+}
+
+function navgo(sid, npid) {
+  go(sid);
+  document.querySelectorAll('.navpill').forEach(p => p.classList.remove('act'));
+  document.getElementById(npid).classList.add('act');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.innerHTML = `<i class="ti ti-check" style="font-size:17px;color:#34a853" aria-hidden="true"></i><span>${msg}</span>`;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function showSov(title, line1, line2, line3) {
+  document.getElementById('sov-title').textContent = title;
+  document.getElementById('sov-line1').textContent = line1 || '';
+  document.getElementById('sov-line2').textContent = line2 || '';
+  document.getElementById('sov-line3').textContent = line3 || '';
+  document.getElementById('sov').classList.add('show');
+}
+
+function closeSov() {
+  document.getElementById('sov').classList.remove('show');
+  go('s-dash');
+}
+
+function addAlert(type, msg) {
+  const now = new Date();
+  const time = now.toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'});
+  S.alerts.unshift({type, msg, time});
+}
+
+function checkThresholds(catId) {
+  const c = cat(catId); const m = meta(catId);
+  const pct = c.allocated > 0 ? c.spent / c.allocated : 1;
+  if (c.spent > c.allocated)
+    addAlert('danger', `Budget exceeded: ${m.name} over by ${fmt(c.spent - c.allocated)}`);
+  else if (pct >= 0.9)
+    addAlert('warn', `Only ${fmt(c.allocated - c.spent)} left in ${m.name}`);
+  else if (pct >= 0.75)
+    addAlert('info', `75% of ${m.name} budget used`);
+}
+
+/* ── Budget Setup ── */
+function renderBudget() {
+  document.getElementById('total-inp').value = S.totalBudget;
+  const el = document.getElementById('budget-rows');
+  el.innerHTML = S.cats.map(c => {
+    const m = meta(c.id);
+    const pct = S.totalBudget > 0 ? Math.min(100, Math.round(c.allocated / S.totalBudget * 100)) : 0;
+    return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:0.5px solid #f5f5f5">
+      <div class="ci" style="background:${m.bg}">${m.icon}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:500;color:#202124">${m.name}</div>
+        <div class="prog-t"><div class="prog-f" style="width:${pct}%;background:${m.bar}"></div></div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px">
+        <div style="display:flex;align-items:center;gap:2px">
+          <span style="font-size:13px;color:#5f6368">₹</span>
+          <input class="inp-amt" type="number" value="${c.allocated}" min="0" data-id="${c.id}"
+            oninput="onCatAmt(this)" />
+        </div>
+        <div style="font-size:11px;color:#9aa0a6">${pct}%</div>
+      </div>
+    </div>`;
+  }).join('');
+  updateAllocSummary();
+}
+
+function onCatAmt(inp) {
+  cat(inp.dataset.id).allocated = parseInt(inp.value) || 0;
+  updateAllocSummary();
+}
+
+function onTotalChange() {
+  S.totalBudget = parseInt(document.getElementById('total-inp').value) || 0;
+  updateAllocSummary();
+}
+
+function updateAllocSummary() {
+  const alloc = totalAlloc();
+  const unalloc = S.totalBudget - alloc;
+  document.getElementById('alloc-sum').textContent = fmt(alloc);
+  const remEl = document.getElementById('alloc-rem');
+  remEl.textContent = fmt(Math.abs(unalloc));
+  remEl.style.color = unalloc < 0 ? '#c5221f' : unalloc === 0 ? '#137333' : '#1a73e8';
+  const errEl = document.getElementById('total-err');
+  const btn = document.getElementById('save-btn');
+  if (S.totalBudget < 1000) { errEl.textContent = 'Minimum budget ₹1,000'; btn.disabled = true; }
+  else if (unalloc < 0)     { errEl.textContent = `Over-allocated by ${fmt(Math.abs(unalloc))} — reduce category amounts`; btn.disabled = true; }
+  else                       { errEl.textContent = ''; btn.disabled = false; }
+}
+
+function saveBudget() {
+  addAlert('ok', `Budget saved: ${fmt(S.totalBudget)} for May 2025`);
+  showSov('Budget Saved! 🎉',
+    `${fmt(S.totalBudget)} set for May 2025`,
+    `Across ${S.cats.length} categories`,
+    'Head to Dashboard to track spending');
+}
+
+/* ── Payment Screen ── */
+function renderPaymentScreen() {
+  updatePayBtn();
+  renderPayCats();
+}
+
+function onPayAmtChange() {
+  updatePayBtn();
+  renderPayCats();
+  document.getElementById('pay-err').textContent = '';
+}
+
+function updatePayBtn() {
+  const amt = parseInt(document.getElementById('pay-inp').value) || 0;
+  document.getElementById('pay-btn').textContent = amt > 0 ? `Pay ${fmt(amt)}` : 'Enter amount';
+  document.getElementById('pay-btn').disabled = amt <= 0;
+}
+
+function renderPayCats() {
+  const payAmt = parseInt(document.getElementById('pay-inp').value) || 0;
+  const el = document.getElementById('pay-cats');
+  el.innerHTML = S.cats.map(c => {
+    const m = meta(c.id);
+    const r = rem(c.id);
+    const insufficient = r < payAmt;
+    const isSel = c.id === S.selPayCat;
+    return `<div class="csr${isSel ? ' sel' : ''}" onclick="selCat('${c.id}')">
+      <div class="ci" style="background:${m.bg}">${m.icon}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:500;color:#202124">${m.name}</div>
+        <div style="font-size:11px;color:${insufficient && payAmt > 0 ? '#c5221f' : '#5f6368'}">
+          ${fmt(r)} left of ${fmt(c.allocated)}
+          ${insufficient && payAmt > 0 ? ' · low balance' : ''}
+        </div>
+      </div>
+      <div class="chk">${isSel ? '<i class="ti ti-check" style="font-size:13px" aria-hidden="true"></i>' : ''}</div>
+    </div>`;
+  }).join('');
+}
+
+function selCat(id) {
+  S.selPayCat = id;
+  renderPayCats();
+  document.getElementById('pay-err').textContent = '';
+}
+
+function doPayment() {
+  const payAmt = parseInt(document.getElementById('pay-inp').value) || 0;
+  const errEl = document.getElementById('pay-err');
+
+  if (payAmt <= 0) { errEl.textContent = 'Enter a valid amount greater than ₹0'; return; }
+
+  const c = cat(S.selPayCat);
+  const m = meta(S.selPayCat);
+  const available = rem(S.selPayCat);
+
+  if (available <= 0) {
+    errEl.textContent = `No remaining balance in ${m.name}. Choose another category or move budget.`;
+    return;
+  }
+
+  errEl.textContent = '';
+  c.spent += payAmt;
+  checkThresholds(S.selPayCat);
+
+  const newRem = rem(S.selPayCat);
+  const overBudget = newRem < 0;
+
+  addAlert('ok', `${fmt(payAmt)} paid · tagged to ${m.name}`);
+
+  showSov(
+    'Payment Successful!',
+    `${fmt(payAmt)} paid to FreshMart`,
+    `Tagged to ${m.name}`,
+    overBudget
+      ? `${m.name} exceeded by ${fmt(Math.abs(newRem))}`
+      : `${fmt(newRem)} remaining in ${m.name}`
+  );
+
+  renderPayCats();
+}
+
+/* ── Dashboard ── */
+function renderDash() {
+  const spent = totalSpent();
+  const total = S.totalBudget;
+  const pct = total > 0 ? Math.min(100, Math.round(spent / total * 100)) : 0;
+  document.getElementById('d-spent').textContent = fmt(spent);
+  document.getElementById('d-total').textContent = fmt(total);
+  document.getElementById('d-pct').textContent = pct + '%';
+  const circ = 188.5;
+  document.getElementById('d-arc').setAttribute('stroke-dashoffset', Math.round(circ * (1 - pct / 100)));
+  document.getElementById('d-arc').setAttribute('stroke', pct > 90 ? '#ea4335' : pct > 75 ? '#ff9800' : '#1a73e8');
+
+  const el = document.getElementById('dash-cats');
+  el.innerHTML = S.cats.map(c => {
+    const m = meta(c.id);
+    const r = rem(c.id);
+    const pct = c.allocated > 0 ? Math.min(100, Math.round(c.spent / c.allocated * 100)) : 100;
+    const over = r < 0;
+    let pill = '';
+    if (over)      pill = `<span class="pill" style="background:#fce8e6;color:#c5221f">Over</span>`;
+    else if (pct >= 90) pill = `<span class="pill" style="background:#fce8e6;color:#c5221f">90%+</span>`;
+    else if (pct >= 75) pill = `<span class="pill" style="background:#fff8e1;color:#f57c00">75%+</span>`;
+    return `<div class="card" style="padding:11px 13px;margin-bottom:8px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="ci" style="background:${m.bg};font-size:15px">${m.icon}</div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px">
+            <span style="font-size:13px;font-weight:500;color:#202124">${m.name}</span>${pill}
+          </div>
+          <div style="font-size:11px;color:#5f6368">${fmt(c.spent)} spent</div>
+          <div class="prog-t"><div class="prog-f" style="width:${pct}%;background:${over ? '#ea4335' : m.bar}"></div></div>
+        </div>
+        <div style="text-align:right;flex-shrink:0;margin-left:8px">
+          <div style="font-size:13px;font-weight:600;color:${over ? '#c5221f' : '#202124'}">${over ? '-' : ''}${fmt(Math.abs(r))}</div>
+          <div style="font-size:11px;color:#9aa0a6">of ${fmt(c.allocated)}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ── Realloc ── */
+function renderRealloc() {
+  const fromEl = document.getElementById('r-from');
+  const toEl = document.getElementById('r-to');
+  const prevF = fromEl.value, prevT = toEl.value;
+  fromEl.innerHTML = S.cats.map(c => {
+    const m = meta(c.id); const r = rem(c.id);
+    return `<option value="${c.id}" ${c.id === prevF ? 'selected' : ''}>${m.name} — ${fmt(r)} left</option>`;
+  }).join('');
+  toEl.innerHTML = S.cats.map(c => {
+    const m = meta(c.id);
+    return `<option value="${c.id}" ${c.id === prevT ? 'selected' : ''}>${m.name}</option>`;
+  }).join('');
+  if (!prevF) fromEl.value = S.cats[3].id;
+  if (!prevT) toEl.value = S.cats[0].id;
+  updateRealloc();
+}
+
+function updateRealloc() {
+  const fid = document.getElementById('r-from').value;
+  const tid = document.getElementById('r-to').value;
+  const amt = parseInt(document.getElementById('r-amt').value) || 0;
+  const avail = rem(fid);
+  const fm = meta(fid), tm = meta(tid);
+  document.getElementById('r-avail').textContent = fmt(avail);
+  document.getElementById('r-pfrom').textContent = fm.name;
+  document.getElementById('r-pto').textContent = tm.name;
+  document.getElementById('r-pamt').textContent = fmt(amt);
+  const errEl = document.getElementById('r-err');
+  const btn = document.getElementById('r-btn');
+  if (fid === tid)    { errEl.textContent = 'Source and destination must differ'; btn.disabled = true; }
+  else if (amt <= 0)  { errEl.textContent = 'Enter an amount greater than ₹0'; btn.disabled = true; }
+  else if (amt > avail){ errEl.textContent = `Only ${fmt(avail)} available in ${fm.name}`; btn.disabled = true; }
+  else                 { errEl.textContent = ''; btn.disabled = false; }
+}
+
+function doRealloc() {
+  const fid = document.getElementById('r-from').value;
+  const tid = document.getElementById('r-to').value;
+  const amt = parseInt(document.getElementById('r-amt').value) || 0;
+  const fm = meta(fid), tm = meta(tid);
+  cat(fid).allocated -= amt;
+  cat(tid).allocated += amt;
+  addAlert('ok', `${fmt(amt)} moved: ${fm.name} → ${tm.name}`);
+  renderRealloc();
+  showSov(
+    'Transfer Complete!',
+    `${fmt(amt)} moved from ${fm.name}`,
+    `to ${tm.name}`,
+    `${tm.name} budget now ${fmt(cat(tid).allocated)}`
+  );
+}
+
+/* ── Alerts ── */
+function renderAlerts() {
+  const el = document.getElementById('alerts-list');
+  const none = document.getElementById('no-alerts');
+  if (!S.alerts.length) { el.innerHTML = ''; none.style.display = 'block'; return; }
+  none.style.display = 'none';
+  const cfg = {
+    danger: ['ti-alert-circle','#fce8e6','#c5221f'],
+    warn:   ['ti-alert-triangle','#fff8e1','#f57c00'],
+    info:   ['ti-info-circle','#e8f0fe','#1a73e8'],
+    ok:     ['ti-check','#e6f4ea','#137333'],
+  };
+  el.innerHTML = S.alerts.map(a => {
+    const [ico, bg, ic] = cfg[a.type] || cfg.info;
+    return `<div class="card" style="display:flex;gap:12px;align-items:flex-start">
+      <div style="width:34px;height:34px;border-radius:50%;background:${bg};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <i class="ti ${ico}" style="color:${ic};font-size:17px" aria-hidden="true"></i>
+      </div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:500;color:#202124">${a.msg}</div>
+        <div style="font-size:11px;color:#9aa0a6;margin-top:3px">Today, ${a.time}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+renderBudget();
+renderDash();
+renderPaymentScreen();
+</script>
